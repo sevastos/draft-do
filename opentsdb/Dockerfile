@@ -4,7 +4,7 @@ RUN apt-get update -y
 RUN apt-get install git-core -y
 
 # Download OpenTSDB
-RUN git clone git://github.com/OpenTSDB/opentsdb.git
+RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git
 RUN cd opentsdb 
 
 #############
@@ -23,7 +23,7 @@ RUN cd opentsdb
 
 #############
 # [2] Package
-RUN ./build.sh debian
+RUN sh build.sh debian
 
 # Create OpenTSDB tables on HBase
 # On Production: COMPRESSION=lzo
