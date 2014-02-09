@@ -5,9 +5,9 @@
 
 IP=`ip addr show eth0 | grep 'inet ' | cut -d/ -f1 | awk '{print $2}'`
 
-# Zookeeper disabled (standalone mode)
+# Zookeeper
 #sed -i "s/@IP@/$IP/g" /opt/hbase/conf/hbase-site.xml
-#sed -i "s/@IP@/$IP/g" /opt/hbase/conf/zoo.cfg
+sed -i "s/@IP@/$IP/g" /opt/hbase/conf/zoo.cfg
 
 echo "$IP $(hostname)" >> /etc/hosts
 

@@ -7,7 +7,6 @@ RUN apt-get install autoconf libtool gnuplot make gettext gettext-base git-core 
 
 # Download OpenTSDB
 RUN mkdir -p /working
-WORKDIR /working
 RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git /working/opentsdb
 
 #############
@@ -26,6 +25,7 @@ RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git /working/opentsdb
 
 #############
 # [2] Package
+WORKDIR /working/opentsdb
 RUN sh /working/opentsdb/build.sh debian
 
 # Create OpenTSDB tables on HBase

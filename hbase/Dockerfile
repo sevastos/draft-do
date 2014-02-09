@@ -17,6 +17,7 @@ ENV HBASE_SERVER /opt/hbase/bin/hbase
 ADD hbase-server /opt/hbase-server
 
 ADD ./hbase-conf.sh /opt/hbase/hbase-conf.sh
+ADD ./zoo.cfg /opt/hbase/conf/zoo.cfg
 RUN sh /opt/hbase/hbase-conf.sh
 
 # Thrift API
