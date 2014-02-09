@@ -1,11 +1,13 @@
 FROM sevas/hbase
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
-RUN apt-get install git-core -y
+RUN apt-get install libtool git-core -y
 
 # Download OpenTSDB
+RUN mkdir /inprogress
+WORKDIR /inprogress
 RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git
-RUN cd opentsdb 
+WORKDIR opentsdb
 
 #############
 # [1] Source
@@ -37,6 +39,9 @@ ADD ./opentsdb.conf /opt/opentsdb/opentsdb.conf
 
 # Install
 RUN dpkg -i ./build/opentsdb-2.0.0/opentsdb-2.0.0_all.deb
+
+# Cleanup
+RUN rm -rf /inprogress
 
 EXPOSE 4242
 
