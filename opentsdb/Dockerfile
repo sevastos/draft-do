@@ -1,13 +1,15 @@
 FROM sevas/hbase
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
-RUN apt-get install libtool git-core -y
+RUN apt-get install autoconf libtool gnuplot make gettext gettext-base git-core -y
+# [DISABLED] Prerequisites LZO
+#RUN apt-get install ant liblzo2-dev -y
 
 # Download OpenTSDB
 RUN mkdir /inprogress
 WORKDIR /inprogress
 RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git
-WORKDIR opentsdb
+WORKDIR /inprogress/opentsdb
 
 #############
 # [1] Source
