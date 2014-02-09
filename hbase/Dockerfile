@@ -17,12 +17,22 @@ ENV HBASE_SERVER /opt/hbase/bin/hbase
 ADD hbase-server /opt/hbase-server
 
 ADD ./hbase-conf.sh /opt/hbase/hbase-conf.sh
-ADD ./zoo.cfg /opt/hbase/conf/zoo.cfg
+#ADD ./zoo.cfg /opt/hbase/conf/zoo.cfg
 RUN sh /opt/hbase/hbase-conf.sh
 
+# Zookeeper
+EXPOSE 2181
 # Thrift API
 EXPOSE 9090
 # Thrift Web UI
 EXPOSE 9095
+# HBase Master API port
+EXPOSE 60000
+# HBase Master web UI at :60010/master-status;  ZK at :60010/zk.jsp
+EXPOSE 60010
+# Region server API port
+EXPOSE 60020
+# HBase Region server web UI at :60030/rs-status
+EXPOSE 60030
 
 CMD ["/opt/hbase-server"]
