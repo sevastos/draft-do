@@ -6,10 +6,9 @@ RUN apt-get install autoconf libtool gnuplot make gettext gettext-base git-core 
 #RUN apt-get install ant liblzo2-dev -y
 
 # Download OpenTSDB
-RUN mkdir /inprogress
-WORKDIR /inprogress
-RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git
-WORKDIR /inprogress/opentsdb
+RUN mkdir -p /working
+WORKDIR /working
+RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git /working/opentsdb
 
 #############
 # [1] Source
@@ -27,11 +26,11 @@ WORKDIR /inprogress/opentsdb
 
 #############
 # [2] Package
-RUN sh build.sh debian
+RUN sh /working/opentsdb/build.sh debian
 
 # Create OpenTSDB tables on HBase
 # On Production: COMPRESSION=lzo
-RUN env COMPRESSION=NONE HBASE_HOME=/opt/hbase ./src/create_table.sh
+RUN env COMPRESSION=NONE HBASE_HOME=/opt/hbase /working/opentsdb/src/create_table.sh
 
 ##############
 
@@ -40,10 +39,10 @@ RUN mkdir -p /opt/opentsdb /tmp/opentsdb
 ADD ./opentsdb.conf /opt/opentsdb/opentsdb.conf
 
 # Install
-RUN dpkg -i ./build/opentsdb-2.0.0/opentsdb-2.0.0_all.deb
+RUN dpkg -i /working/opentsdb/build/opentsdb-2.0.0/opentsdb-2.0.0_all.deb
 
 # Cleanup
-RUN rm -rf /inprogress
+RUN rm -rf /working
 
 EXPOSE 4242
 

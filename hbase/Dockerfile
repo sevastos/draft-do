@@ -16,9 +16,8 @@ ENV HBASE_SERVER /opt/hbase/bin/hbase
 
 ADD hbase-server /opt/hbase-server
 
-WORKDIR /opt/hbase
-ADD ./hbase-conf.sh ./hbase-conf.sh
-RUN sh hbase-conf.sh
+ADD ./hbase-conf.sh /opt/hbase/hbase-conf.sh
+RUN sh /opt/hbase/hbase-conf.sh
 
 # Thrift API
 EXPOSE 9090
