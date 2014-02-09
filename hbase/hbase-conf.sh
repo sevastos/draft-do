@@ -1,3 +1,5 @@
+#!/bin/bash
+
 iface=lo`uname | sed -n s/Darwin/0/p`
 cat > conf/hbase-site.xml <<EOF
 <?xml version="1.0"?>
