@@ -6,7 +6,7 @@ RUN apt-get update -y
 #RUN apt-get install zookeeper zookeperd gnuplot -y
 #RUN service zookeeper restart
 
-RUN wget -O - -o /dev/null http://archive.apache.org/dist/hbase/hbase-$HBASE_VERSION/hbase-$HBASE_VERSION.tar.gz | tar xzf
+RUN wget -O - -o /dev/null http://archive.apache.org/dist/hbase/hbase-$HBASE_VERSION/hbase-$HBASE_VERSION.tar.gz | tar xz
 #RUN tar xzf hbase-$HBASE_VERSION.tar.gz
 RUN mkdir -p /opt && mv hbase-$HBASE_VERSION /opt/hbase
 

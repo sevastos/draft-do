@@ -7,7 +7,8 @@ RUN apt-get install autoconf libtool gnuplot make gettext gettext-base git-core 
 
 # Download OpenTSDB
 RUN mkdir -p /working
-RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git /working/opentsdb
+#RUN git clone -b next git://github.com/OpenTSDB/opentsdb.git /working/opentsdb
+RUN git clone -b next_lastdp git://github.com/OpenTSDB/opentsdb.git /working/opentsdb
 
 #############
 # [1] Source
