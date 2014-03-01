@@ -31,14 +31,27 @@ RUN sh /working/opentsdb/build.sh debian
 
 # Create OpenTSDB tables on HBase
 # On Production: COMPRESSION=lzo
-RUN service zookeeper restart
-RUN env COMPRESSION=NONE HBASE_HOME=/opt/hbase /working/opentsdb/src/create_table.sh
+# Hardcoded dist-mode
+RUN /opt/hbase/bin/start-hbase.sh && COMPRESSION=NONE /working/opentsdb/src/create_table.sh
+
+#RUN service zookeeper restart
+#RUN echo "status" > /opt/test_shell
+#RUN echo "exit" >> /opt/test_shell
+#RUN HBASE_CONF_DIR=/opt/hbase/conf /opt/hbase/bin/hbase shell /opt/test_shell
+
+##RUN sh /opt/hbase/bin/hbase-daemon.sh --config /opt/hbase/conf stop master
+##RUN sh /opt/hbase/bin/hbase-daemon.sh --config /opt/hbase/conf start master
+##RUN sh /opt/hbase/bin/start-hbase.sh
+##RUN sh /opt/hbase/bin/hbase status
+
+#RUN COMPRESSION=NONE HBASE_HOME=/opt/hbase /working/opentsdb/src/create_table.sh
 
 ##############
 
 # Config
 RUN mkdir -p /opt/opentsdb /tmp/opentsdb
 ADD ./opentsdb.conf /opt/opentsdb/opentsdb.conf
+RUN cat /opt/opentsdb/opentsdb.conf >> /etc/opentsdb/opentsdb.conf
 
 # Install
 RUN dpkg -i /working/opentsdb/build/opentsdb-2.0.0/opentsdb-2.0.0_all.deb
@@ -46,6 +59,6 @@ RUN dpkg -i /working/opentsdb/build/opentsdb-2.0.0/opentsdb-2.0.0_all.deb
 # Cleanup
 RUN rm -rf /working
 
+RUN sh /opt/hbase/bin/start-hbase.sh && service opentsdb start
+
 EXPOSE 4242
-
-

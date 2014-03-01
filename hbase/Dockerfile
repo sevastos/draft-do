@@ -1,21 +1,20 @@
 FROM sevas/java7
-ENV HBASE_VERSION 0.94.17
+
+RUN echo "HBASE_VERSION=0.94.17" >> /etc/environment
+RUN echo "HBASE_DATA=/data/hbase" >> /etc/environment
+RUN echo "HBASE_ROOT=/opt/hbase" >> /etc/environment
+RUN echo "HBASE_SERVER=/opt/hbase/bin/hbase" >> /etc/environment
+RUN echo "HBASE_CONF_DIR=/opt/hbase/conf" >> /etc/environment
+RUN echo "HBASE_HOME=/opt/hbase" >> /etc/environment
 
 RUN apt-get update -y
-
 RUN apt-get install zookeeper zookeeperd gnuplot -y
 
 RUN wget -O - -o /dev/null http://archive.apache.org/dist/hbase/hbase-$HBASE_VERSION/hbase-$HBASE_VERSION.tar.gz | tar xz
-#RUN tar xzf hbase-$HBASE_VERSION.tar.gz
 RUN mkdir -p /opt && mv hbase-$HBASE_VERSION /opt/hbase
 
 # Data will go here (see hbase-site.xml)
-ENV HBASE_DATA /data/hbase
 RUN mkdir -p $HBASE_DATA /opt/hbase/logs
-
-ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
-ENV HBASE_ROOT /opt/hbase
-ENV HBASE_SERVER /opt/hbase/bin/hbase
 
 ADD ./hbase-conf.sh /opt/hbase/hbase-conf.sh
 RUN echo "export HBASE_MANAGES_ZK=true" >> /opt/hbase/conf/hbase-env.sh
@@ -23,6 +22,7 @@ RUN echo "export HBASE_MANAGES_ZK=true" >> /opt/hbase/conf/hbase-env.sh
 #ADD hbase-server /opt/hbase-server
 RUN sh /opt/hbase/hbase-conf.sh
 RUN service zookeeper restart
+
 RUN sh /opt/hbase/bin/start-hbase.sh
 
 # Zookeeper
