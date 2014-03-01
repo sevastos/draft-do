@@ -3,8 +3,8 @@ ENV HBASE_VERSION 0.94.17
 
 RUN apt-get update -y
 
-#RUN apt-get install zookeeper zookeperd gnuplot -y
-#RUN service zookeeper restart
+RUN apt-get install zookeeper zookeperd gnuplot -y
+RUN service zookeeper restart
 
 RUN wget -O - -o /dev/null http://archive.apache.org/dist/hbase/hbase-$HBASE_VERSION/hbase-$HBASE_VERSION.tar.gz | tar xz
 #RUN tar xzf hbase-$HBASE_VERSION.tar.gz

@@ -1,4 +1,4 @@
-FROM sevas/hbase
+FROM sevas/hbase:0.94.17
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
 RUN apt-get install autoconf libtool gnuplot make gettext gettext-base git-core -y
