@@ -31,6 +31,7 @@ RUN sh /working/opentsdb/build.sh debian
 
 # Create OpenTSDB tables on HBase
 # On Production: COMPRESSION=lzo
+RUN service zookeeper restart
 RUN env COMPRESSION=NONE HBASE_HOME=/opt/hbase /working/opentsdb/src/create_table.sh
 
 ##############

@@ -3,8 +3,7 @@ ENV HBASE_VERSION 0.94.17
 
 RUN apt-get update -y
 
-RUN apt-get install zookeeper zookeperd gnuplot -y
-RUN service zookeeper restart
+RUN apt-get install zookeeper zookeeperd gnuplot -y
 
 RUN wget -O - -o /dev/null http://archive.apache.org/dist/hbase/hbase-$HBASE_VERSION/hbase-$HBASE_VERSION.tar.gz | tar xz
 #RUN tar xzf hbase-$HBASE_VERSION.tar.gz
@@ -19,9 +18,12 @@ ENV HBASE_ROOT /opt/hbase
 ENV HBASE_SERVER /opt/hbase/bin/hbase
 
 ADD ./hbase-conf.sh /opt/hbase/hbase-conf.sh
+RUN echo "export HBASE_MANAGES_ZK=true" >> /opt/hbase/conf/hbase-env.sh
 #ADD ./zoo.cfg /opt/hbase/conf/zoo.cfg
 #ADD hbase-server /opt/hbase-server
 RUN sh /opt/hbase/hbase-conf.sh
+RUN service zookeeper restart
+RUN sh /opt/hbase/bin/start-hbase.sh
 
 # Zookeeper
 EXPOSE 2181
