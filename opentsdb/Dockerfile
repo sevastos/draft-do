@@ -1,4 +1,4 @@
-FROM sevas/hbase:0.94.17
+FROM sevas/hbase:0.94.17.2
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -y
 RUN apt-get install autoconf libtool gnuplot make gettext gettext-base git-core -y
@@ -27,12 +27,12 @@ RUN git clone -b next_lastdp git://github.com/OpenTSDB/opentsdb.git /working/ope
 #############
 # [2] Package
 WORKDIR /working/opentsdb
-RUN sh /working/opentsdb/build.sh debian
+RUN . /etc/environment && bash /working/opentsdb/build.sh debian
 
 # Create OpenTSDB tables on HBase
 # On Production: COMPRESSION=lzo
 # Hardcoded dist-mode
-RUN /opt/hbase/bin/start-hbase.sh && COMPRESSION=NONE /working/opentsdb/src/create_table.sh
+#RUN /opt/hbase/bin/start-hbase.sh && COMPRESSION=NONE /working/opentsdb/src/create_table.sh
 
 #RUN service zookeeper restart
 #RUN echo "status" > /opt/test_shell
@@ -50,15 +50,32 @@ RUN /opt/hbase/bin/start-hbase.sh && COMPRESSION=NONE /working/opentsdb/src/crea
 
 # Config
 RUN mkdir -p /opt/opentsdb /tmp/opentsdb
-ADD ./opentsdb.conf /opt/opentsdb/opentsdb.conf
-RUN cat /opt/opentsdb/opentsdb.conf >> /etc/opentsdb/opentsdb.conf
+ADD ./opentsdb.conf /etc/opentsdb.conf
+#RUN cat /etc/opentsdb.conf >> /etc/opentsdb/opentsdb.conf
 
 # Install
-RUN dpkg -i /working/opentsdb/build/opentsdb-2.0.0/opentsdb-2.0.0_all.deb
+RUN . /etc/environment && dpkg -i /working/opentsdb/build/opentsdb-2.0.0/opentsdb-2.0.0_all.deb
 
 # Cleanup
+WORKDIR /
 RUN rm -rf /working
 
-RUN sh /opt/hbase/bin/start-hbase.sh && service opentsdb start
+ENV JAVA_HOME /usr/lib/jvm/java-7-oracle
+ENV HBASE_VERSION 0.94.17
+ENV HBASE_DATA /data/hbase
+ENV HBASE_ROOT /opt/hbase
+ENV HBASE_SERVER /opt/hbase/bin/hbase
+ENV HBASE_CONF_DIR /opt/hbase/conf
+ENV HBASE_HOME /opt/hbase
+
+RUN . /etc/environment && bash -e /opt/hbase/bin/stop-hbase.sh && bash -e /opt/hbase/bin/start-hbase.sh && COMPRESSION=NONE bash -e /usr/share/opentsdb/bin/create_table.sh && . /etc/environment && service opentsdb start
+#RUN COMPRESSION=NONE . /usr/share/opentsdb/bin/create_table.sh
+#RUN . /etc/environment && . /opt/hbase/bin/stop-hbase.sh && . /opt/hbase/bin/start-hbase.sh && COMPRESSION=NONE bash -e /usr/share/opentsdb/bin/create_table.sh && service opentsdb start
+#RUN . /etc/environment && . /opt/hbase/bin/stop-hbase.sh && . /opt/hbase/bin/start-hbase.sh && COMPRESSION=NONE bash -e /usr/share/opentsdb/bin/create_table.sh && . /etc/environment && service opentsdb restart
+#/usr/share/opentsdb/bin/tsdb tsd
+#RUN . /etc/environment && . /opt/hbase/bin/stop-hbase.sh && . /opt/hbase/bin/start-hbase.sh && service opentsdb start
+
+VOLUME ["/data/hbase"]
+RUN echo "Donee"
 
 EXPOSE 4242
